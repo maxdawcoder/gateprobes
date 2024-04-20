@@ -116,7 +116,7 @@ void Simulation::LayoutFromFile(std::ifstream& is)
 
 int Simulation::Step()
 {
-	int stepTime = m_queue.min()->time;
+	const int stepTime = m_queue.min()->time;
 	std::vector<Transition> transitions;
 	while (m_queue.len() > 0 && m_queue.min()->time == stepTime)
 	{
@@ -129,7 +129,7 @@ int Simulation::Step()
 		transitions.emplace_back(*transition);
 	}
 
-	for (const auto transition : transitions)
+	for (const auto& transition : transitions)
 	{
 		for (auto* gate : transition.gate->GetOutGates())
 		{

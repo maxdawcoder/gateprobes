@@ -28,14 +28,19 @@ public:
             return;
         auto min = m_queue[0];
         m_minIndex = 0;
-        for (int i = 1; i < m_queue.size(); ++i)
+        const auto m_queue_size = m_queue.size(); // Fix avoid getting size on every round
+        int counter = 1;
+        auto i = ++m_queue.begin(); // Fix iterating from second element
+        while (counter<m_queue_size) // Fix index. Faster than iterator
         {
-            auto val = m_queue[i];
+            const auto val = *i; // Fix avoid copying twice
             if (val < min)
             {
                 min = val;
-                m_minIndex = i;
+                m_minIndex = counter;
             }
+            ++i;
+            ++counter;
         }
     }
     size_t len() const noexcept { return m_queue.size(); }
