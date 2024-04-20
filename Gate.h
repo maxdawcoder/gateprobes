@@ -7,15 +7,15 @@
 class Gate
 {
 public:
-	Gate() {}
+	Gate() = default;
 	explicit Gate(std::string name, const GateType* type) : m_name(name), m_type(type) {};
 	void ConnectInput(int i, Gate* target);
 	void AddOutput(Gate* target);
-	void Probe() noexcept;
+	void Probe();
 	bool IsProbed() const noexcept { return m_probed; }
 	int GetOutput() const noexcept { return m_output; }
 	void SetOutput(int value) noexcept { m_output = value; }
-	std::string GetName() const noexcept { return m_name; }
+	std::string GetName() const { return m_name; }
 	std::vector<Gate*> GetOutGates() { return m_outGates; }
 	int GetTransitionOutput() const;
 	int GetTransitionTime(int time) const;

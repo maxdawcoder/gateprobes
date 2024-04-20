@@ -19,7 +19,7 @@ void Gate::AddOutput(Gate* target)
 	m_outGates.emplace_back(target);
 }
 
-void Gate::Probe() noexcept
+void Gate::Probe()
 {
 	if (m_probed)
 		RaiseError("Gate already probed");

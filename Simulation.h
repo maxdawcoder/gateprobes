@@ -1,24 +1,25 @@
 #pragma once
 #include <fstream>
 #include <memory>
+#include <iostream>
 
 #include "PriorityQueue.h"
 #include "Circuit.h"
 
 struct Transition
 {
-	Transition(Gate* g, int output, int t) : gate(g), newOutput(output), time(t) {}
+	explicit Transition(Gate* g, int output, int t) : gate(g), newOutput(output), time(t) {}
 	bool operator<(const Transition& other) const noexcept
 	{
 		if (time == other.time)
 			return objectId < other.objectId;
 		return time < other.time ;
 	}
-	bool IsValid() const noexcept {  return gate->GetOutput() != newOutput; }
+	bool IsValid() const {  return gate->GetOutput() != newOutput; }
 	void Apply();
-	Gate* gate;
-	int newOutput;
-	int time;
+	Gate* gate{};
+	int newOutput{};
+	int time{};
 	int objectId = ++GlobalId;
 	static int GlobalId;
 };
@@ -31,7 +32,7 @@ struct Probe
 			return newValue < other.newValue;
 		return time < other.time;
 	}
-	boost::property_tree::ptree GetJson();
+	boost::property_tree::ptree GetJson() const;
 	int time{};
 	std::string gateName;
 	int newValue{};
@@ -49,8 +50,8 @@ public:
 	void Run();
 	void ProbeAllGates() { m_undoLog = m_circuit->ProbeAllGates(); }
 	void UndoProbeAllGates();
-	boost::property_tree::ptree GetJson();
-	void PrintProbes(std::ostream& os);
+	boost::property_tree::ptree GetJson() const;
+	void PrintProbes(std::ostream& os) const;
 private:
 	std::unique_ptr<Circuit> m_circuit;
 	std::string m_layout;

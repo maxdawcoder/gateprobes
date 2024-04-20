@@ -5,6 +5,7 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <algorithm>
+#include <future>
 
 #include "Circuit.h"
 #include "Simulation.h"
@@ -19,7 +20,7 @@ void Transition::Apply()
 	gate->SetOutput(newOutput);
 }
 
-boost::property_tree::ptree Probe::GetJson()
+boost::property_tree::ptree Probe::GetJson() const
 {
 	boost::property_tree::ptree children;
 	boost::property_tree::ptree pt;
@@ -167,19 +168,22 @@ void Simulation::UndoProbeAllGates()
 	m_undoLog.clear();
 }
 
-boost::property_tree::ptree Simulation::GetJson()
+boost::property_tree::ptree Simulation::GetJson() const
 {
 	boost::property_tree::ptree pt;
 	pt.add_child("circuit", m_circuit->GetJson());
+	std::vector<std::future<std::pair<std::string, boost::property_tree::ptree>>> temp;
+	for (const auto& p : m_probes)
+		temp.emplace_back(std::async(std::launch::async, [&p] {return std::make_pair(std::string(""), p.GetJson()); }));
 	boost::property_tree::ptree probes;
-	for (auto& p : m_probes)
-		probes.push_back(std::make_pair("",p.GetJson()));
+	for (auto& v : temp)
+		probes.push_back(v.get());
 	pt.add_child("trace", probes);
 	pt.add("layout", m_layout);
 	return pt;
 }
 
-void Simulation::PrintProbes(std::ostream& os)
+void Simulation::PrintProbes(std::ostream& os) const
 {
 	for (const auto& probe : m_probes)
 	{

@@ -33,7 +33,7 @@ public:
         auto i = ++m_queue.begin(); // Fix iterating from second element
         while (counter<m_queue_size) // Fix index. Faster than iterator
         {
-            const auto val = *i; // Fix avoid copying twice
+            const auto& val = *i; // Fix avoid copying twice
             if (val < min)
             {
                 min = val;

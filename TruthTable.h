@@ -7,8 +7,8 @@
 class TruthTable
 {
 public:
-    TruthTable() {}
-    TruthTable(std::string name, std::vector<int> outputs) : m_name(name), m_table(outputs)
+    TruthTable() = default;
+    explicit TruthTable(std::string name, std::vector<int> outputs) : m_name(name), m_table(outputs)
     {
         if (outputs.size() != 2 && outputs.size() != 4)
             throw std::runtime_error("Unsupported truth table size");
@@ -25,6 +25,6 @@ public:
 private:
     std::string m_name;
     std::vector<int> m_table;
-    int m_inputCount;
+    int m_inputCount{};
 };
 
