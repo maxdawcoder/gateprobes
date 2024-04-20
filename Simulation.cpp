@@ -3,6 +3,7 @@
 #include <boost/tokenizer.hpp>
 #include <boost/regex.hpp>
 #include <boost/property_tree/ptree.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 #include <algorithm>
 
 #include "Circuit.h"
@@ -103,15 +104,21 @@ void Simulation::LayoutFromFile(std::ifstream& is)
 		if (temp == "layout")
 			break;
 	}
-	
-	boost::regex xmlRegex("^<\\?xml.*\\?>\n");
-	boost::regex docTypeRegex("^<!DOCTYPE.*?>\n");
-	std::ostringstream sstr;
-	sstr << is.rdbuf();
-	std::string str = sstr.str();
-	str = boost::regex_replace(str, xmlRegex, "");
-	str = boost::regex_replace(str, docTypeRegex, "");
-	m_layout = str;
+	std::string xml_string_begin ="<?xml"; // FIX replace regex
+	std::string xml_string_end =">";
+	std::string doc_string_begin ="<!DOCTYPE";
+	std::string doc_string_end =">";
+	while (std::getline(is, temp))
+	{
+		if (boost::algorithm::starts_with(temp, xml_string_begin))
+			if (boost::algorithm::ends_with(temp, xml_string_end))
+				continue;
+		if (boost::algorithm::starts_with(temp, doc_string_begin))
+			if (boost::algorithm::ends_with(temp, doc_string_end))
+				continue;
+	m_layout += temp;
+	m_layout += "\n";
+	}
 }
 
 int Simulation::Step()

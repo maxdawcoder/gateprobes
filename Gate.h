@@ -20,7 +20,7 @@ public:
 	int GetTransitionOutput() const;
 	int GetTransitionTime(int time) const;
 	void UndoProbe();
-	boost::property_tree::ptree GetJson();
+	boost::property_tree::ptree GetJson() const;
 private:
 	const GateType* m_type{};
 	std::string m_name;

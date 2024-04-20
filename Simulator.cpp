@@ -32,8 +32,10 @@ int main(int argc, char** argv)
     {
         boost::property_tree::ptree simResult = simulation->GetJson();
         std::ofstream output("circuit.jsonp", std::ios::out);
+        std::stringstream ss;
         output << "onJsonp(";
-        boost::property_tree::write_json(output, simResult);
+        boost::property_tree::write_json(ss, simResult); // FIX reduce << operation on file stream
+        output << ss.str();
         output << ");\n";
     }
     simulation->PrintProbes(std::cout);

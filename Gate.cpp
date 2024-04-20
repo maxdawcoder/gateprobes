@@ -27,7 +27,7 @@ void Gate::Probe() noexcept
 	m_probed = true;
 }
 
-boost::property_tree::ptree Gate::GetJson()
+boost::property_tree::ptree Gate::GetJson() const
 {
 	boost::property_tree::ptree pt;
 	pt.add("id", m_name);

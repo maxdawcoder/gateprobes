@@ -1,4 +1,5 @@
 #include <stdexcept>
+#include <future>
 #include "Circuit.h"
 /* 
 Adds a truth table that can be later attached to gate types.
@@ -77,11 +78,12 @@ std::vector<Gate*> Circuit::ProbeAllGates()
 
 boost::property_tree::ptree Circuit::GetJson()
 {
+	std::vector<std::future<std::pair<std::string, boost::property_tree::ptree>>> temp;
+	for (const auto& [k, v] : m_gates)
+		temp.emplace_back(std::async(std::launch::async, [&v] {return std::make_pair(std::string(""), v.GetJson()); }));
 	boost::property_tree::ptree pt;
-	for (auto& [k, v] : m_gates)
-	{
-		pt.push_back(std::make_pair("", v.GetJson()));
-	}
+	for (auto& v : temp)
+		pt.push_back(v.get());
 	boost::property_tree::ptree ret;
 	ret.add_child("gates", pt);
 	return ret;
