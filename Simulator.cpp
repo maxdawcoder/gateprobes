@@ -22,10 +22,8 @@ int main(int argc, char** argv)
     if (json)
     {
         simulation->LayoutFromFile(input);
-        // probe all gates should only be executed when 
-        // json output is on 
-        simulation->ProbeAllGates();
     }
+    simulation->ProbeAllGates(); // Fix probe gates on every run
         
     simulation->Run();
     if (json)
